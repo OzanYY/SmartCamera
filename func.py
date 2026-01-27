@@ -1,10 +1,10 @@
 import cv2
-import os
+from Webcam import Webcam
+from config import cameras
 
 
 def get_webcams_opencv():
     """Получить список доступных веб-камер через OpenCV"""
-    webcams = []
 
     # Проверяем первые 10 индексов камер (обычно достаточно)
     for index in range(10):
@@ -12,28 +12,21 @@ def get_webcams_opencv():
         # Для Linux/Mac: cap = cv2.VideoCapture(index)
 
         if cap.isOpened():
+            camera = Webcam()
             # Получаем информацию о камере
-            width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-            height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-            fps = cap.get(cv2.CAP_PROP_FPS)
+            camera.width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            camera.f = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            camera.fps = cap.get(cv2.CAP_PROP_FPS)
+            camera.camera_id = index
+            camera.is_opened = True
+            camera.cap = cap
 
-            webcam_info = {
-                'index': index,
-                'name': f'Камера {index}',
-                'resolution': f'{width}x{height}',
-                'fps': fps,
-                'width': width,
-                'height': height,
-                'backend': 'OpenCV'
-            }
-            webcams.append(webcam_info)
+            cameras.append(camera)
             cap.release()
+            camera.is_opened = False
 
-    return webcams
-
-
-# Использование
-cameras = get_webcams_opencv()
-print(f"Найдено камер: {len(cameras)}")
-for cam in cameras:
-    print(f"Индекс: {cam['index']}, Разрешение: {cam['resolution']}, FPS: {cam['fps']}")
+def on_camera_selected(sender, app_data):
+    # sender - tag, app_data - str line
+    from config import selected_cam, cameras
+    index = int(app_data.split()[1])
+    selected_cam = (index, cameras[index])

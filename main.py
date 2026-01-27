@@ -1,14 +1,8 @@
-import window
 import func
-
-cameras = []
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press F9 to toggle the breakpoint.
+import window
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    cameras = func.get_webcams_opencv()
+    func.get_webcams_opencv()
     window.run()

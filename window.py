@@ -1,6 +1,6 @@
 import dearpygui.dearpygui as dpg
 import numpy as np
-from main import cameras
+from config import cameras
 
 WIDTH = 1280
 HEIGHT = 720
@@ -19,6 +19,7 @@ def run():
     dpg.destroy_context()  # Уничтожение контекста
 
 def contain():
+    from func import on_camera_selected
     with dpg.window(tag="Primary Window", no_resize=True):
         with dpg.tab_bar():
             with dpg.tab(label="Webcam"):
@@ -26,7 +27,12 @@ def contain():
                 dpg.add_separator()
                 with dpg.group(horizontal=True):
                     dpg.add_text("Select web camera:")
-                    dpg.add_combo(cameras, tag="select_camera", default_value="")
+                    dpg.add_combo(
+                        list(map(lambda x: f"Camera {x.camera_id}", cameras)),
+                        tag="select_camera",
+                        default_value="",
+                        callback=on_camera_selected
+                    )
                     if not cameras:
                         dpg.add_text("Camera is not found", color=[255, 255, 0])
                     else:
