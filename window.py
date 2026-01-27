@@ -1,7 +1,7 @@
 import dearpygui.dearpygui as dpg
 import numpy as np
 from config import cameras
-from func import  update_camera_frame
+from func import update_camera_frame
 
 WIDTH = 1280
 HEIGHT = 720
@@ -16,11 +16,11 @@ def run():
     dpg.setup_dearpygui()
     dpg.show_viewport()  # Показываем окно
     dpg.set_primary_window("Primary Window", True)
-    dpg.start_dearpygui()  # Запускаем цикл
-
     while dpg.is_dearpygui_running():
         update_camera_frame()
-
+        # 2. Рендерим интерфейс
+        dpg.render_dearpygui_frame()
+    #dpg.start_dearpygui()  # Запускаем цикл
     dpg.destroy_context()  # Уничтожение контекста
 
 def contain():

@@ -2,7 +2,7 @@ import cv2
 import dearpygui.dearpygui as dpg
 import numpy as np
 from Webcam import Webcam
-from config import cameras, selected_cam
+from config import cameras, selected_cam, camera_selected
 
 
 def get_webcams_opencv():
@@ -32,6 +32,8 @@ def on_camera_selected(sender, app_data):
     global selected_cam
     index = int(app_data.split()[1])
     selected_cam = cameras[index]
+    global camera_selected
+    camera_selected = True
     dpg.configure_item("Camera status", default_value=f"Camera {index} | {selected_cam.width}x{selected_cam.height}px")
     dpg.configure_item(
         "image_texture",
@@ -46,7 +48,7 @@ def on_start_camera(sender, app_data):
 
     if camera is not None:
         if camera.cap is None:
-            camera.cap = cv2.VideoCapture(camera.camera_id)
+            camera.cap = cv2.VideoCapture(camera.camera_id, cv2.CAP_DSHOW)
             camera.cap.set(cv2.CAP_PROP_FRAME_WIDTH, camera.width)
             camera.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, camera.height)
 
@@ -65,6 +67,7 @@ def on_stop_camera(sender, app_data):
             camera.cap = None
 
         camera.is_opened = False
+        dpg.set_value("image_texture", np.zeros((selected_cam.width, selected_cam.height, 3), dtype=np.float32))
         print("Camera stopped")
     else:
         print("Camera is not selected")
@@ -73,19 +76,22 @@ def on_stop_camera(sender, app_data):
 def update_camera_frame():
     """Обновление кадра камеры в текстуре"""
     camera = selected_cam
-    if not camera.is_opened or camera.cap is None:
-        return
+    global camera_selected
 
-    # Читаем кадр
-    ret, frame = camera.cap.read()
-    if not ret:
-        return
+    if camera_selected:
+        if not camera.is_opened or camera.cap is None:
+            return
 
-    # Конвертируем BGR (OpenCV) в RGB (DearPyGui)
-    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # Читаем кадр
+        ret, frame = camera.cap.read()
+        if not ret:
+            return
 
-    # Нормализуем значения пикселей (0-255 -> 0.0-1.0)
-    frame_normalized = frame_rgb.astype(np.float32) / 255.0
+        # Конвертируем BGR (OpenCV) в RGB (DearPyGui)
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-    # Обновляем текстуру
-    dpg.set_value("image_texture", frame_normalized)
+        # Нормализуем значения пикселей (0-255 -> 0.0-1.0)
+        frame_normalized = frame_rgb.astype(np.float32) / 255.0
+
+        # Обновляем текстуру
+        dpg.set_value("image_texture", frame_normalized)
