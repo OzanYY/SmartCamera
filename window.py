@@ -1,6 +1,7 @@
 import dearpygui.dearpygui as dpg
 import numpy as np
 from config import cameras
+from func import  update_camera_frame
 
 WIDTH = 1280
 HEIGHT = 720
@@ -16,6 +17,10 @@ def run():
     dpg.show_viewport()  # Показываем окно
     dpg.set_primary_window("Primary Window", True)
     dpg.start_dearpygui()  # Запускаем цикл
+
+    while dpg.is_dearpygui_running():
+        update_camera_frame()
+
     dpg.destroy_context()  # Уничтожение контекста
 
 def contain():
@@ -23,35 +28,50 @@ def contain():
     with dpg.window(tag="Primary Window", no_resize=True):
         with dpg.tab_bar():
             with dpg.tab(label="Webcam"):
-                dpg.add_text("SmartCamera in dev", tag="main_label",color=[0, 255, 255])
+                dpg.add_text("SmartCamera in dev",color=[0, 255, 255])
                 dpg.add_separator()
                 with dpg.group(horizontal=True):
-                    dpg.add_text("Select web camera:")
+                    dpg.add_text("Web camera:")
                     dpg.add_combo(
                         list(map(lambda x: f"Camera {x.camera_id}", cameras)),
                         tag="select_camera",
                         default_value="",
                         callback=on_camera_selected
                     )
-                    if not cameras:
-                        dpg.add_text("Camera is not found", color=[255, 255, 0])
-                    else:
-                        dpg.add_text("Camera: 1280x720 (HD 16:9)", color=[150, 150, 150])
+                    from config import selected_cam
+                    temp_text = "Camera is not found"
+                    if selected_cam is not None:
+                        if selected_cam.camera_id >= 0:
+                            temp_text = f"Camera {selected_cam.camera_id}: {selected_cam.width}x{selected_cam.height}"
+                    elif cameras:
+                        temp_text = "Select camera"
+                    dpg.add_text(temp_text, color=[255, 255, 0], tag="Camera status")
                 with dpg.group(horizontal=True):
-                    dpg.add_button(label="Start Camera", width=200)
-                    dpg.add_button(label="Stop Camera", width=200)
+                    from func import on_start_camera, on_stop_camera
+                    dpg.add_button(label="Start Camera", width=200, callback=on_start_camera)
+                    dpg.add_button(label="Stop Camera", width=200, callback=on_stop_camera)
                     dpg.add_button(label="Start Scanning", width=200)
                 dpg.add_separator()
                 dpg.add_text("")
-                with dpg.texture_registry():
-                    texture_id = dpg.add_raw_texture(
-                        width=640,  # ширина изображения
-                        height=480,  # высота изображения
-                        default_value=np.zeros((480, 640, 3), dtype=np.float32),  # пустой массив
-                        format=dpg.mvFormat_Float_rgb,  # формат RGB
-                        tag="image_texture"  # уникальный ID
-                    )
-                dpg.add_image("image_texture", width=640, height=480)
+                if selected_cam:
+                    with dpg.texture_registry():
+                        dpg.add_raw_texture(
+                            width=selected_cam.width,  # ширина изображения
+                            height=selected_cam.height,  # высота изображения
+                            default_value=np.zeros((selected_cam.width, selected_cam.height, 3), dtype=np.float32),  # пустой массив
+                            format=dpg.mvFormat_Float_rgb,  # формат RGB
+                            tag="image_texture"  # уникальный ID
+                        )
+                else:
+                    with dpg.texture_registry():
+                        dpg.add_raw_texture(
+                            width=640,  # ширина изображения
+                            height=480,  # высота изображения
+                            default_value=np.zeros((480, 640, 3), dtype=np.float32),  # пустой массив
+                            format=dpg.mvFormat_Float_rgb,  # формат RGB
+                            tag="image_texture"  # уникальный ID
+                        )
+                dpg.add_image("image_texture", width=640, height=480, tag="camera_out")
             with dpg.tab(label="Calibration"):
                 # Панель калибровки
                 dpg.add_text("Calibration Controls:", color=(255, 200, 100))

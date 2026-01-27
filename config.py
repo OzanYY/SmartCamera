@@ -1,2 +1,2 @@
-cameras = []
-selected_cam = (-1, None)
+cameras: list = []
+selected_cam = None
