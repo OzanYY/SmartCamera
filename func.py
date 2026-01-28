@@ -1,8 +1,9 @@
 import cv2
 import dearpygui.dearpygui as dpg
 import numpy as np
+import Aruco
 from Webcam import Webcam
-from config import cameras, selected_cam, camera_selected
+from config import cameras, selected_cam, camera_selected, scan_started
 
 
 def get_webcams_opencv():
@@ -72,11 +73,19 @@ def on_stop_camera(sender, app_data):
     else:
         print("Camera is not selected")
 
+def on_start_scan(sender, app_data):
+    global scan_started
+    camera = selected_cam
+    if camera is not None:
+        scan_started = not scan_started
+    else:
+        print("Camera is not selected")
 
 def update_camera_frame():
     """Обновление кадра камеры в текстуре"""
     camera = selected_cam
     global camera_selected
+    global scan_started
 
     if camera_selected:
         if not camera.is_opened or camera.cap is None:
@@ -87,8 +96,13 @@ def update_camera_frame():
         if not ret:
             return
 
-        # Конвертируем BGR (OpenCV) в RGB (DearPyGui)
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        if scan_started:
+            det = Aruco.ArucoMarkerDetector(dict_type="aruco_original")
+            result = det.detect_markers(frame, estimate_pose=True, draw=True)
+            frame_rgb = cv2.cvtColor(result['image'], cv2.COLOR_BGR2RGB)
+        else:
+            # Конвертируем BGR (OpenCV) в RGB (DearPyGui)
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         # Нормализуем значения пикселей (0-255 -> 0.0-1.0)
         frame_normalized = frame_rgb.astype(np.float32) / 255.0

@@ -47,10 +47,10 @@ def contain():
                         temp_text = "Select camera"
                     dpg.add_text(temp_text, color=[255, 255, 0], tag="Camera status")
                 with dpg.group(horizontal=True):
-                    from func import on_start_camera, on_stop_camera
+                    from func import on_start_camera, on_stop_camera, on_start_scan
                     dpg.add_button(label="Start Camera", width=200, callback=on_start_camera)
                     dpg.add_button(label="Stop Camera", width=200, callback=on_stop_camera)
-                    dpg.add_button(label="Start Scanning", width=200)
+                    dpg.add_button(label="Start/Stop Scanning", width=200, callback=on_start_scan)
                 dpg.add_separator()
                 dpg.add_text("")
                 if selected_cam:
