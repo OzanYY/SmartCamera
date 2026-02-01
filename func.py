@@ -1,9 +1,20 @@
+import math
 import cv2
 import dearpygui.dearpygui as dpg
 import numpy as np
+import json
 import Aruco
 from Webcam import Webcam
-from config import cameras, selected_cam, camera_selected, scan_started
+import config
+
+
+cameras = config.cameras
+selected_cam = config.selected_cam
+camera_selected = config.camera_selected
+scan_started = config.scan_started
+calibration = config.calibration
+tolerance = config.tolerance
+scan_output = dict()
 
 
 def get_webcams_opencv():
@@ -28,6 +39,7 @@ def get_webcams_opencv():
             cap.release()
             camera.is_opened = False
 
+
 def on_camera_selected(sender, app_data):
     # sender - tag, app_data - str line
     global selected_cam
@@ -42,6 +54,7 @@ def on_camera_selected(sender, app_data):
         height=selected_cam.height
     )
     dpg.configure_item("camera_out", width=selected_cam.width, height=selected_cam.height)
+
 
 def on_start_camera(sender, app_data):
     """Запуск камеры"""
@@ -58,6 +71,7 @@ def on_start_camera(sender, app_data):
     else:
         print("Camera is not selected")
 
+
 def on_stop_camera(sender, app_data):
     """Остановка камеры"""
     camera = selected_cam
@@ -73,6 +87,7 @@ def on_stop_camera(sender, app_data):
     else:
         print("Camera is not selected")
 
+
 def on_start_scan(sender, app_data):
     global scan_started
     camera = selected_cam
@@ -81,11 +96,13 @@ def on_start_scan(sender, app_data):
     else:
         print("Camera is not selected")
 
+
 def update_camera_frame():
     """Обновление кадра камеры в текстуре"""
     camera = selected_cam
     global camera_selected
     global scan_started
+    global scan_output
 
     if camera_selected:
         if not camera.is_opened or camera.cap is None:
@@ -99,6 +116,7 @@ def update_camera_frame():
         if scan_started:
             det = Aruco.ArucoMarkerDetector(dict_type="aruco_original")
             result = det.detect_markers(frame, estimate_pose=True, draw=True)
+            scan_output = result
             frame_rgb = cv2.cvtColor(result['image'], cv2.COLOR_BGR2RGB)
         else:
             # Конвертируем BGR (OpenCV) в RGB (DearPyGui)
@@ -109,3 +127,84 @@ def update_camera_frame():
 
         # Обновляем текстуру
         dpg.set_value("image_texture", frame_normalized)
+
+
+def on_calibrate_btn(sender, app_data):
+    def find_length(start: list, end: list):
+        return math.sqrt(abs(end[0] - start[0]) ** 2 + abs(end[1] - start[1]) ** 2)
+
+    global camera_selected
+    global scan_started
+    global scan_output
+    global calibration
+    camera = selected_cam
+    k = tolerance
+
+    if camera is None:
+        print("Camera is not selected")
+        return
+
+    if not camera.is_opened:
+        print("Camera is not started")
+        return
+
+    if not scan_started:
+        print("Camera is not scanning")
+        return
+
+    if not scan_output['markers_info']:
+        print("Markers are not found")
+        return
+
+    # Основная логика
+    for i, marker in enumerate(scan_output['markers_info']):
+        calibration[str(i)] = {
+            "center": marker['center'],
+            "id": str(i),
+            "size": round(math.sqrt(
+                find_length(marker['corners'][0][0], marker['corners'][0][1]) ** 2 +
+                find_length(marker['corners'][0][1], marker['corners'][0][2]) ** 2
+            )),
+            "tolerance": k
+        }
+    dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration)}")
+    print(calibration)
+
+
+def on_reset_calibrate(sender, app_data):
+    global calibration
+    calibration = {}
+    dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration)}")
+
+
+def on_save_calibration(sender, app_data):
+    global calibration
+    with open('calibration.json', 'w', encoding='utf-8') as f:
+        json.dump(calibration, f, ensure_ascii=False, indent=2)
+    print("Calibration saved")
+
+
+def on_load_calibration(sender, app_data):
+    global calibration
+    with open('calibration.json', 'r', encoding='utf-8') as f:
+        calibration = json.load(f)
+    dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration)}")
+    print("Calibration loaded")
+    print(calibration)
+
+
+def on_change_tolerance(sender, app_data):
+    global tolerance
+    tolerance = round(app_data, 2)
+
+
+def on_update_tolerance(sender, app_data):
+    global tolerance
+    global calibration
+
+    if calibration:
+        for marker in calibration:
+            calibration[marker]['tolerance'] = tolerance
+        print(calibration)
+    else:
+        print("Calibration not find")

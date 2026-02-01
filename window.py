@@ -1,7 +1,9 @@
+from gc import callbacks
+
 import dearpygui.dearpygui as dpg
 import numpy as np
 from config import cameras
-from func import update_camera_frame
+import func
 
 WIDTH = 1280
 HEIGHT = 720
@@ -17,14 +19,13 @@ def run():
     dpg.show_viewport()  # Показываем окно
     dpg.set_primary_window("Primary Window", True)
     while dpg.is_dearpygui_running():
-        update_camera_frame()
+        func.update_camera_frame()
         # 2. Рендерим интерфейс
         dpg.render_dearpygui_frame()
     #dpg.start_dearpygui()  # Запускаем цикл
     dpg.destroy_context()  # Уничтожение контекста
 
 def contain():
-    from func import on_camera_selected
     with dpg.window(tag="Primary Window", no_resize=True):
         with dpg.tab_bar():
             with dpg.tab(label="Webcam"):
@@ -36,7 +37,7 @@ def contain():
                         list(map(lambda x: f"Camera {x.camera_id}", cameras)),
                         tag="select_camera",
                         default_value="",
-                        callback=on_camera_selected
+                        callback=func.on_camera_selected
                     )
                     from config import selected_cam
                     temp_text = "Camera is not found"
@@ -47,10 +48,9 @@ def contain():
                         temp_text = "Select camera"
                     dpg.add_text(temp_text, color=[255, 255, 0], tag="Camera status")
                 with dpg.group(horizontal=True):
-                    from func import on_start_camera, on_stop_camera, on_start_scan
-                    dpg.add_button(label="Start Camera", width=200, callback=on_start_camera)
-                    dpg.add_button(label="Stop Camera", width=200, callback=on_stop_camera)
-                    dpg.add_button(label="Start/Stop Scanning", width=200, callback=on_start_scan)
+                    dpg.add_button(label="Start Camera", width=200, callback=func.on_start_camera)
+                    dpg.add_button(label="Stop Camera", width=200, callback=func.on_stop_camera)
+                    dpg.add_button(label="Start/Stop Scanning", width=200, callback=func.on_start_scan)
                 dpg.add_separator()
                 dpg.add_text("")
                 if selected_cam:
@@ -80,19 +80,22 @@ def contain():
                         label="Calibrate",
                         tag="calibrate_btn",
                         width=120,
-                        enabled=False
+                        callback=func.on_calibrate_btn
                     )
                     dpg.add_button(
                         label="Clear Calibration",
-                        width=120
+                        width=120,
+                        callback=func.on_calibrate_btn
                     )
                     dpg.add_button(
                         label="Save",
-                        width=80
+                        width=80,
+                        callback=func.on_save_calibration
                     )
                     dpg.add_button(
                         label="Load",
-                        width=80
+                        width=80,
+                        callback=func.on_load_calibration
                     )
 
                 # Настройка множителя размера области
@@ -100,15 +103,16 @@ def contain():
                     dpg.add_text("Area size multiplier:")
                     dpg.add_input_float(
                         tag="tolerance_multiplier_input",
-                        default_value=123,
-                        width=80,
-                        step=0.1
+                        default_value=1.0,
+                        width=180,
+                        step=0.1,
+                        callback=func.on_change_tolerance
                     )
                     dpg.add_button(
                         label="Update",
-                        width=80
+                        width=80,
+                        callback=func.on_update_tolerance
                     )
-                    dpg.add_text("(affects next calibration)", color=(150, 150, 150))
 
                 dpg.add_text("Calibrated positions: 0", tag="calibration_info", color=(150, 255, 150))
 
