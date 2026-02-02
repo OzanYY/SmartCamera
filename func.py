@@ -135,10 +135,11 @@ def update_camera_frame():
                 frame_normalized = drawer.draw_circle(
                     calibration[key]['center'][0],
                     calibration[key]['center'][1],
-                    calibration[key]['size'] / 2 * calibration[key]['tolerance'], 
+                    calibration[key]['size'] / 2 * calibration[key]['tolerance'],
                     [255, 0, 0],
                     thickness=2
                 )
+            #ad = get_points_in_quadrilateral_numpy((camera.width, camera.height), scan_output['markers_info'][0]['corners'][0])
 
         # Обновляем текстуру
         dpg.set_value("image_texture", frame_normalized)
@@ -225,3 +226,44 @@ def on_update_tolerance(sender, app_data):
         print(calibration)
     else:
         print("Calibration not find")
+
+
+def point_in_polygon(x, y, polygon):
+    """
+    Проверяет, находится ли точка (x, y) внутри многоугольника.
+    polygon - список вершин в порядке обхода [(x1, y1), (x2, y2), ...]
+    Возвращает True если точка внутри или на границе
+    """
+    n = len(polygon)
+    inside = False
+
+    for i in range(n):
+        x1, y1 = polygon[i]
+        x2, y2 = polygon[(i + 1) % n]
+
+        # Проверяем, находится ли точка на ребре
+        if min(x1, x2) <= x <= max(x1, x2) and min(y1, y2) <= y <= max(y1, y2):
+            # Проверяем коллинеарность (для вертикальных/горизонтальных ребер)
+            if (x2 - x1) * (y - y1) == (y2 - y1) * (x - x1):
+                return True
+
+        # Алгоритм трассировки луча
+        if ((y1 > y) != (y2 > y)) and (x < (x2 - x1) * (y - y1) / (y2 - y1) + x1):
+            inside = not inside
+
+    return inside
+
+def get_points_in_quadrilateral_numpy(matrix_shape, corners):
+    """
+    Векторизованная версия с использованием numpy для больших матриц
+    """
+    rows, cols = matrix_shape
+
+    # Создаем сетку координат
+    x_coords, y_coords = np.meshgrid(np.arange(rows), np.arange(cols), indexing='ij')
+    points = np.column_stack([x_coords.ravel(), y_coords.ravel()])
+
+    # Векторизованная проверка для каждой точки
+    mask = np.array([point_in_polygon(x, y, corners) for x, y in points])
+
+    return points[mask].tolist()
