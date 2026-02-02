@@ -4,6 +4,7 @@ import dearpygui.dearpygui as dpg
 import numpy as np
 import json
 import Aruco
+import TextureDrawer
 from Webcam import Webcam
 import config
 
@@ -103,6 +104,7 @@ def update_camera_frame():
     global camera_selected
     global scan_started
     global scan_output
+    global calibration
 
     if camera_selected:
         if not camera.is_opened or camera.cap is None:
@@ -124,6 +126,19 @@ def update_camera_frame():
 
         # Нормализуем значения пикселей (0-255 -> 0.0-1.0)
         frame_normalized = frame_rgb.astype(np.float32) / 255.0
+
+        if calibration:
+            drawer = TextureDrawer.TextureDrawer(frame_normalized)
+            for i, key in enumerate(calibration):
+                if i < 2:
+                    continue
+                frame_normalized = drawer.draw_circle(
+                    calibration[key]['center'][0],
+                    calibration[key]['center'][1],
+                    calibration[key]['size'] / 2 * calibration[key]['tolerance'], 
+                    [255, 0, 0],
+                    thickness=2
+                )
 
         # Обновляем текстуру
         dpg.set_value("image_texture", frame_normalized)
@@ -157,6 +172,8 @@ def on_calibrate_btn(sender, app_data):
         return
 
     # Основная логика
+    calibration['width'] = camera.width
+    calibration['height'] = camera.height
     for i, marker in enumerate(scan_output['markers_info']):
         calibration[str(i)] = {
             "center": marker['center'],

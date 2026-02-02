@@ -85,7 +85,7 @@ def contain():
                     dpg.add_button(
                         label="Clear Calibration",
                         width=120,
-                        callback=func.on_calibrate_btn
+                        callback=func.on_reset_calibrate
                     )
                     dpg.add_button(
                         label="Save",
