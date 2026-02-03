@@ -244,3 +244,37 @@ def on_update_tolerance(sender, app_data):
 def point_in_circle(cx, cy, r, px, py):
     squared_distance = (px - cx) ** 2 + (py - cy) ** 2
     return squared_distance <= r * r
+
+
+def update_reassignment_ui():
+    """Обновление UI переназначения позиций"""
+    if dpg.does_item_exist("reassignment_group"):
+        dpg.delete_item("reassignment_group", children_only=True)
+
+        if True:#scanner.calibrated_markers:
+            dpg.add_text("Swap/Reassign positions:", parent="reassignment_group", color=(200, 200, 200))
+            dpg.add_text("If both positions exist, they will be swapped", parent="reassignment_group",
+                         color=(150, 150, 150))
+
+            with dpg.group(horizontal=True, parent="reassignment_group"):
+                dpg.add_text("Position 1:")
+                dpg.add_input_int(
+                    tag="reassign_from",
+                    default_value=0,
+                    width=80,
+                    parent="reassignment_group"
+                )
+                dpg.add_text("Position 2:")
+                dpg.add_input_int(
+                    tag="reassign_to",
+                    default_value=0,
+                    width=80,
+                    parent="reassignment_group"
+                )
+                dpg.add_button(
+                    label="Swap",
+                    #callback=do_reassignment,
+                    parent="reassignment_group"
+                )
+        else:
+            dpg.add_text("No calibrated positions to reassign", parent="reassignment_group", color=(150, 150, 150))

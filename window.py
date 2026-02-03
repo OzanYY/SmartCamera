@@ -118,6 +118,22 @@ def contain():
 
                 dpg.add_separator()
                 dpg.add_image("image_texture", width=640, height=480)
+
+                # Переназначение позиций
+                with dpg.collapsing_header(label="Position Swap/Reassignment", default_open=False):
+                    dpg.add_text("Swap two calibrated positions:", color=(200, 200, 200))
+                    with dpg.group(tag="reassignment_group"):
+                        dpg.add_text("No calibrated positions to reassign", color=(150, 150, 150))
+
+                dpg.add_separator()
+
+                # Привязка позиций к линиям
+                with dpg.collapsing_header(label="Position Assignment (L0-L6)", default_open=False):
+                    dpg.add_text("Assign calibrated positions to lines:", color=(200, 200, 200))
+                    with dpg.group(tag="assignment_group"):
+                        dpg.add_text("No calibrated positions to assign", color=(150, 150, 150))
+
+                dpg.add_separator()
             with dpg.tab(label="UDP"):
                 # UDP настройки
                 dpg.add_text("UDP Settings:", color=(100, 255, 255))
