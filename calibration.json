@@ -3,83 +3,83 @@
   "height": 480,
   "0": {
     "center": [
-      461.0,
-      283.75
+      176.5,
+      306.0
     ],
     "id": "0",
-    "size": 122,
-    "tolerance": 1.0
+    "size": 145,
+    "tolerance": 0.8
   },
   "1": {
     "center": [
-      359.75,
-      278.5
+      295.5,
+      307.25
     ],
     "id": "1",
-    "size": 120,
-    "tolerance": 1.0
+    "size": 143,
+    "tolerance": 0.8
   },
   "2": {
     "center": [
-      256.5,
-      273.5
+      410.5,
+      307.0
     ],
     "id": "2",
-    "size": 120,
-    "tolerance": 1.0
+    "size": 142,
+    "tolerance": 0.8
   },
   "3": {
     "center": [
-      456.0,
-      205.75
+      404.0,
+      206.0
     ],
     "id": "3",
-    "size": 116,
-    "tolerance": 1.0
+    "size": 141,
+    "tolerance": 0.8
   },
   "4": {
     "center": [
-      262.5,
-      198.0
+      179.75,
+      209.0
     ],
     "id": "4",
-    "size": 116,
-    "tolerance": 1.0
+    "size": 141,
+    "tolerance": 0.8
   },
   "5": {
     "center": [
-      359.25,
-      202.0
+      292.75,
+      208.25
     ],
     "id": "5",
-    "size": 116,
-    "tolerance": 1.0
+    "size": 140,
+    "tolerance": 0.8
   },
   "6": {
     "center": [
-      267.5,
-      123.75
+      181.75,
+      112.5
     ],
     "id": "6",
-    "size": 109,
-    "tolerance": 1.0
+    "size": 137,
+    "tolerance": 0.8
   },
   "7": {
     "center": [
-      360.0,
-      127.25
+      399.25,
+      108.0
     ],
     "id": "7",
-    "size": 108,
-    "tolerance": 1.0
+    "size": 137,
+    "tolerance": 0.8
   },
   "8": {
     "center": [
-      451.75,
-      131.25
+      290.25,
+      110.25
     ],
     "id": "8",
-    "size": 108,
-    "tolerance": 1.0
+    "size": 136,
+    "tolerance": 0.8
   }
 }

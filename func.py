@@ -8,7 +8,6 @@ import TextureDrawer
 from Webcam import Webcam
 import config
 
-
 cameras = config.cameras
 selected_cam = config.selected_cam
 camera_selected = config.camera_selected
@@ -129,17 +128,31 @@ def update_camera_frame():
 
         if calibration:
             drawer = TextureDrawer.TextureDrawer(frame_normalized)
-            for i, key in enumerate(calibration):
-                if i < 2:
-                    continue
+            for i in range(len(calibration) - 2):
+                color = [255, 0, 0]
+                for j in range(len(scan_output['markers_info'])):
+                    if point_in_circle(
+                            calibration[str(i)]['center'][0],
+                            calibration[str(i)]['center'][1],
+                            calibration[str(i)]['size'] / 2 * calibration[str(i)]['tolerance'],
+                            scan_output['markers_info'][j]['center'][0],
+                            scan_output['markers_info'][j]['center'][1]):
+                        color = [0, 255, 0]
+                        break
                 frame_normalized = drawer.draw_circle(
-                    calibration[key]['center'][0],
-                    calibration[key]['center'][1],
-                    calibration[key]['size'] / 2 * calibration[key]['tolerance'],
-                    [255, 0, 0],
+                    calibration[str(i)]['center'][0],
+                    calibration[str(i)]['center'][1],
+                    calibration[str(i)]['size'] / 2 * calibration[str(i)]['tolerance'],
+                    color,
                     thickness=2
                 )
-            #ad = get_points_in_quadrilateral_numpy((camera.width, camera.height), scan_output['markers_info'][0]['corners'][0])
+                frame_normalized = drawer.draw_text(
+                    calibration[str(i)]['center'][0] - calibration[str(i)]['size'] / 2 * calibration[str(i)]['tolerance'],
+                    calibration[str(i)]['center'][1] - calibration[str(i)]['size'] / 2 * calibration[str(i)]['tolerance'],
+                    calibration[str(i)]['id'],
+                    color,
+                    scale=2
+                )
 
         # Обновляем текстуру
         dpg.set_value("image_texture", frame_normalized)
@@ -185,7 +198,7 @@ def on_calibrate_btn(sender, app_data):
             )),
             "tolerance": k
         }
-    dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration)}")
+    dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration) - 2}")
     print(calibration)
 
 
@@ -206,7 +219,7 @@ def on_load_calibration(sender, app_data):
     global calibration
     with open('calibration.json', 'r', encoding='utf-8') as f:
         calibration = json.load(f)
-    dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration)}")
+    dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration) - 2}")
     print("Calibration loaded")
     print(calibration)
 
@@ -228,42 +241,6 @@ def on_update_tolerance(sender, app_data):
         print("Calibration not find")
 
 
-def point_in_polygon(x, y, polygon):
-    """
-    Проверяет, находится ли точка (x, y) внутри многоугольника.
-    polygon - список вершин в порядке обхода [(x1, y1), (x2, y2), ...]
-    Возвращает True если точка внутри или на границе
-    """
-    n = len(polygon)
-    inside = False
-
-    for i in range(n):
-        x1, y1 = polygon[i]
-        x2, y2 = polygon[(i + 1) % n]
-
-        # Проверяем, находится ли точка на ребре
-        if min(x1, x2) <= x <= max(x1, x2) and min(y1, y2) <= y <= max(y1, y2):
-            # Проверяем коллинеарность (для вертикальных/горизонтальных ребер)
-            if (x2 - x1) * (y - y1) == (y2 - y1) * (x - x1):
-                return True
-
-        # Алгоритм трассировки луча
-        if ((y1 > y) != (y2 > y)) and (x < (x2 - x1) * (y - y1) / (y2 - y1) + x1):
-            inside = not inside
-
-    return inside
-
-def get_points_in_quadrilateral_numpy(matrix_shape, corners):
-    """
-    Векторизованная версия с использованием numpy для больших матриц
-    """
-    rows, cols = matrix_shape
-
-    # Создаем сетку координат
-    x_coords, y_coords = np.meshgrid(np.arange(rows), np.arange(cols), indexing='ij')
-    points = np.column_stack([x_coords.ravel(), y_coords.ravel()])
-
-    # Векторизованная проверка для каждой точки
-    mask = np.array([point_in_polygon(x, y, corners) for x, y in points])
-
-    return points[mask].tolist()
+def point_in_circle(cx, cy, r, px, py):
+    squared_distance = (px - cx) ** 2 + (py - cy) ** 2
+    return squared_distance <= r * r
