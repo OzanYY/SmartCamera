@@ -350,3 +350,46 @@ def toggle_position_assignment(sender, app_data):
         calibration[f'{sender.split('-')[1]}']['line_attachment'] = ""
         print(f"Mark №{sender.split('-')[1]} detached from line {sender.split('-')[0]}")
     #pprint.pprint(calibration)
+
+
+# UDP настройки
+#UDP_IP = "127.0.0.1"
+#UDP_PORT = 8888
+
+
+#def sendCameraData(l0="0", l1="0", l2="0", l3="0", l4="0", l5="0", l6="0"):
+#    """Отправка данных по UDP"""
+#    message = f"C:228:0:{l0}:{l1}:{l2}:{l3}:{l4}:{l5}:{l6}#"
+#    try:
+#        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+#        sock.sendto(bytes(message, "utf-8"), (UDP_IP, UDP_PORT))
+#        sock.close()
+#        return True, message
+#    except Exception as e:
+#        return False, str(e)
+
+
+def generate_packet(line):
+    array = list()
+    for obj in calibration:
+        if obj == "width" or obj == "height":
+            continue
+        if calibration[obj]['line_attachment'] == line:
+            array.append(str(get_marker_in_circle(obj))) #Определение метки в окружности
+
+    return ','.join(array) if array else None
+
+
+def get_marker_in_circle(number_circle):
+    for i in range(len(scan_output['markers_info'])):
+        if point_in_circle(
+                calibration[str(_find_key(number_circle))]['center'][0],
+                calibration[str(_find_key(number_circle))]['center'][1],
+                calibration[str(_find_key(number_circle))]['size'] / 2 * calibration[str(_find_key(number_circle))]['tolerance'],
+                scan_output['markers_info'][i]['center'][0],
+                scan_output['markers_info'][i]['center'][1]):
+            return scan_output['markers_info'][i]['id']
+    return 0
+
+def temp():
+    generate_packet("L0")

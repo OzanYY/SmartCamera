@@ -159,7 +159,8 @@ def contain():
                     dpg.add_button(
                         label="Start UDP",
                         tag="udp_btn",
-                        width=120
+                        width=120,
+                        callback=func.temp
                     )
                     dpg.add_button(
                         label="Send Once",
