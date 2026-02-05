@@ -3,83 +3,92 @@
   "height": 480,
   "0": {
     "center": [
-      332.0,
-      270.75
+      334.5,
+      279.25
     ],
     "id": "7",
-    "size": 138,
-    "tolerance": 0.8
+    "size": 149,
+    "tolerance": 0.8,
+    "line_attachment": "L0"
   },
   "1": {
     "center": [
-      442.25,
-      260.75
+      444.75,
+      269.75
     ],
     "id": "8",
-    "size": 137,
-    "tolerance": 0.8
+    "size": 140,
+    "tolerance": 0.8,
+    "line_attachment": "L0"
   },
   "2": {
     "center": [
-      222.5,
-      280.25
+      430.5,
+      176.0
     ],
-    "id": "6",
+    "id": "5",
     "size": 139,
-    "tolerance": 0.8
+    "tolerance": 0.8,
+    "line_attachment": "L0"
   },
   "3": {
     "center": [
-      427.75,
-      167.5
+      218.5,
+      196.0
     ],
-    "id": "5",
-    "size": 135,
-    "tolerance": 0.8
+    "id": "3",
+    "size": 133,
+    "tolerance": 0.8,
+    "line_attachment": "L0"
   },
   "4": {
     "center": [
-      217.75,
-      188.0
+      221.75,
+      288.75
     ],
-    "id": "3",
-    "size": 135,
-    "tolerance": 0.8
+    "id": "6",
+    "size": 140,
+    "tolerance": 0.8,
+    "line_attachment": "L0"
   },
   "5": {
     "center": [
-      322.5,
-      177.5
+      324.75,
+      186.0
     ],
     "id": "4",
-    "size": 132,
-    "tolerance": 0.8
+    "size": 134,
+    "tolerance": 0.8,
+    "line_attachment": "L1"
   },
   "6": {
     "center": [
-      416.0,
-      76.75
+      210.75,
+      106.5
     ],
-    "id": "2",
-    "size": 128,
-    "tolerance": 0.8
+    "id": "0",
+    "size": 138,
+    "tolerance": 0.8,
+    "line_attachment": "L1"
   },
   "7": {
     "center": [
-      313.25,
-      86.75
+      315.5,
+      94.5
     ],
     "id": "1",
-    "size": 127,
-    "tolerance": 0.8
+    "size": 128,
+    "tolerance": 0.8,
+    "line_attachment": "L1"
   },
   "8": {
     "center": [
-      210.25,
-      96.75
+      418.75,
+      84.5
     ],
-    "id": "0",
-    "size": 126,
-    "tolerance": 0.8
+    "id": "2",
+    "size": 128,
+    "tolerance": 0.8,
+    "line_attachment": "L1"
   }
 }

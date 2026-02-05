@@ -1,4 +1,5 @@
 import math
+import pprint
 import cv2
 import dearpygui.dearpygui as dpg
 import numpy as np
@@ -196,10 +197,12 @@ def on_calibrate_btn(sender, app_data):
                 find_length(marker['corners'][0][0], marker['corners'][0][1]) ** 2 +
                 find_length(marker['corners'][0][1], marker['corners'][0][2]) ** 2
             )),
-            "tolerance": k
+            "tolerance": k,
+            "line_attachment": ""
         }
     dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration) - 2}")
     update_reassignment_ui()
+    update_assignment_ui()
     print(calibration)
 
 
@@ -208,6 +211,7 @@ def on_reset_calibrate(sender, app_data):
     calibration = {}
     dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration)}")
     update_reassignment_ui()
+    update_assignment_ui()
     print("Calibration reset")
 
 
@@ -225,6 +229,7 @@ def on_load_calibration(sender, app_data):
             calibration = json.load(f)
         dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration) - 2}")
         update_reassignment_ui()
+        update_assignment_ui()
         print("Calibration loaded")
         print(calibration)
     else:
@@ -289,14 +294,13 @@ def update_reassignment_ui():
 
 
 def do_reassignment():
-    print(calibration)
     from_ = _find_key(dpg.get_value("reassign_from"))
     to_ = _find_key(dpg.get_value("reassign_to"))
     if from_ is None or to_ is None:
         print("Position not found")
         return
     calibration[from_]['id'], calibration[to_]['id'] = calibration[to_]['id'], calibration[from_]['id']
-    print(calibration)
+    print(f"Swapped {from_} to {to_}")
 
 
 def _find_key(_id):
@@ -306,3 +310,43 @@ def _find_key(_id):
         if calibration[key]['id'] == str(_id):
             return key
     return None
+
+
+def update_assignment_ui():
+    """Обновление UI привязки позиций"""
+    if dpg.does_item_exist("assignment_group"):
+        dpg.delete_item("assignment_group", children_only=True)
+
+        if len(calibration) > 0:
+            num_positions = len(calibration)
+
+            for line_idx in range(7):
+                with dpg.group(horizontal=True, parent="assignment_group"):
+                    dpg.add_text(f"L{line_idx}:", color=(255, 200, 100))
+
+                    # Создаем чекбоксы для каждой позиции
+                    for pos_idx in sorted(calibration.keys()):
+                        if pos_idx == "width" or pos_idx == "height":
+                            continue
+                        is_assigned = False
+                        if calibration[pos_idx]['line_attachment'] != "" and calibration[pos_idx]['line_attachment'] == f"L{line_idx}":
+                            is_assigned = True
+                        dpg.add_checkbox(
+                            tag=f"L{line_idx}-{pos_idx}",
+                            label=f"Pos{pos_idx}",
+                            default_value=is_assigned,
+                            callback=toggle_position_assignment,
+                            user_data=(line_idx, pos_idx)
+                        )
+        else:
+            dpg.add_text("No calibrated positions to assign", parent="assignment_group", color=(150, 150, 150))
+
+
+def toggle_position_assignment(sender, app_data):
+    if app_data:
+        calibration[f'{sender.split('-')[1]}']['line_attachment'] = sender.split('-')[0]
+        print(f"Mark №{sender.split('-')[1]} attached to line {sender.split('-')[0]}")
+    else:
+        calibration[f'{sender.split('-')[1]}']['line_attachment'] = ""
+        print(f"Mark №{sender.split('-')[1]} detached from line {sender.split('-')[0]}")
+    #pprint.pprint(calibration)
