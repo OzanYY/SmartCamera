@@ -199,6 +199,7 @@ def on_calibrate_btn(sender, app_data):
             "tolerance": k
         }
     dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration) - 2}")
+    update_reassignment_ui()
     print(calibration)
 
 
@@ -206,6 +207,8 @@ def on_reset_calibrate(sender, app_data):
     global calibration
     calibration = {}
     dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration)}")
+    update_reassignment_ui()
+    print("Calibration reset")
 
 
 def on_save_calibration(sender, app_data):
@@ -216,12 +219,16 @@ def on_save_calibration(sender, app_data):
 
 
 def on_load_calibration(sender, app_data):
-    global calibration
-    with open('calibration.json', 'r', encoding='utf-8') as f:
-        calibration = json.load(f)
-    dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration) - 2}")
-    print("Calibration loaded")
-    print(calibration)
+    if scan_started:
+        global calibration
+        with open('calibration.json', 'r', encoding='utf-8') as f:
+            calibration = json.load(f)
+        dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration) - 2}")
+        update_reassignment_ui()
+        print("Calibration loaded")
+        print(calibration)
+    else:
+        print("Camera not scanning")
 
 
 def on_change_tolerance(sender, app_data):
@@ -251,30 +258,51 @@ def update_reassignment_ui():
     if dpg.does_item_exist("reassignment_group"):
         dpg.delete_item("reassignment_group", children_only=True)
 
-        if True:#scanner.calibrated_markers:
-            dpg.add_text("Swap/Reassign positions:", parent="reassignment_group", color=(200, 200, 200))
-            dpg.add_text("If both positions exist, they will be swapped", parent="reassignment_group",
-                         color=(150, 150, 150))
-
-            with dpg.group(horizontal=True, parent="reassignment_group"):
-                dpg.add_text("Position 1:")
+        if len(calibration) > 0:
+            with dpg.group(parent="reassignment_group"):
                 dpg.add_input_int(
+                    label="Position 1",
                     tag="reassign_from",
                     default_value=0,
                     width=80,
-                    parent="reassignment_group"
+                    parent="reassignment_group",
+                    min_value=0,
+                    max_value=len(calibration) - 2,
                 )
-                dpg.add_text("Position 2:")
                 dpg.add_input_int(
+                    label="Position 2",
                     tag="reassign_to",
                     default_value=0,
                     width=80,
-                    parent="reassignment_group"
+                    parent="reassignment_group",
+                    min_value=0,
+                    max_value=len(calibration) - 2,
                 )
-                dpg.add_button(
-                    label="Swap",
-                    #callback=do_reassignment,
-                    parent="reassignment_group"
-                )
+            dpg.add_button(
+                label="Swap",
+                callback=do_reassignment,
+                width=160,
+                parent="reassignment_group"
+            )
         else:
             dpg.add_text("No calibrated positions to reassign", parent="reassignment_group", color=(150, 150, 150))
+
+
+def do_reassignment():
+    print(calibration)
+    from_ = _find_key(dpg.get_value("reassign_from"))
+    to_ = _find_key(dpg.get_value("reassign_to"))
+    if from_ is None or to_ is None:
+        print("Position not found")
+        return
+    calibration[from_]['id'], calibration[to_]['id'] = calibration[to_]['id'], calibration[from_]['id']
+    print(calibration)
+
+
+def _find_key(_id):
+    for key in calibration:
+        if key == "width" or key == "height":
+            continue
+        if calibration[key]['id'] == str(_id):
+            return key
+    return None
