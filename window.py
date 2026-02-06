@@ -1,8 +1,7 @@
-from gc import callbacks
-
 import dearpygui.dearpygui as dpg
 import numpy as np
-from config import cameras
+import datetime as dt
+from config import cameras, UDP_IP, UDP_PORT
 import func
 
 WIDTH = 1280
@@ -18,10 +17,12 @@ def run():
     dpg.setup_dearpygui()
     dpg.show_viewport()  # Показываем окно
     dpg.set_primary_window("Primary Window", True)
+    timer = 0
     while dpg.is_dearpygui_running():
         func.update_camera_frame()
         # 2. Рендерим интерфейс
         dpg.render_dearpygui_frame()
+        timer = func.send_interval(dpg.get_value("freq"), timer, func.send_udp_data)
     #dpg.start_dearpygui()  # Запускаем цикл
     dpg.destroy_context()  # Уничтожение контекста
 
@@ -141,29 +142,32 @@ def contain():
                     dpg.add_text("IP:")
                     dpg.add_input_text(
                         tag="udp_ip_input",
-                        default_value="qwe", #UDP_IP,
+                        default_value=UDP_IP, #UDP_IP,
                         width=120
                     )
                     dpg.add_text("Port:")
                     dpg.add_input_text(
                         tag="udp_port_input",
-                        default_value="0,0,0,0",  #str(UDP_PORT),
+                        default_value=UDP_PORT,  #str(UDP_PORT),
                         width=80
                     )
                     dpg.add_button(
                         label="Update",
+                        callback=func.update_udp_configuration,
                         width=80
                     )
+                dpg.add_input_int(tag="freq", label="delay", default_value=1, width=80)
 
                 with dpg.group(horizontal=True):
                     dpg.add_button(
                         label="Start UDP",
                         tag="udp_btn",
                         width=120,
-                        callback=func.temp
+                        callback=func.toggle_udp
                     )
                     dpg.add_button(
                         label="Send Once",
+                        callback=func.send_udp_once,
                         width=120
                     )
 
@@ -172,15 +176,12 @@ def contain():
 
                 # Вывод считанных значений
                 dpg.add_text("Reading Output (Packet):", color=(100, 255, 200))
-                with dpg.group(horizontal=True):
-                    dpg.add_input_text(
-                        tag="reading_output",
-                        default_value="",
-                        width=800,
-                        readonly=True
-                    )
-                    dpg.add_button(label="Copy", width=80)
                 dpg.add_text("Format: C:228:0:l0:l1:l2:l3:l4:l5:l6#",
                              color=(150, 150, 150))
                 dpg.add_separator()
                 dpg.add_image("image_texture", width=640, height=480)
+
+            with dpg.tab(label="Logs"):
+                with dpg.child_window(tag="log_window", height=600, border=True,
+                                      horizontal_scrollbar=True, autosize_x=False):
+                    pass

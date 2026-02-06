@@ -3,92 +3,102 @@
   "height": 480,
   "0": {
     "center": [
-      334.5,
-      279.25
+      439.75,
+      196.75
     ],
-    "id": "7",
-    "size": 149,
-    "tolerance": 0.8,
-    "line_attachment": "L0"
+    "id": "8",
+    "size": 58,
+    "tolerance": 1.0,
+    "line_attachment": "L1"
   },
   "1": {
     "center": [
-      444.75,
-      269.75
+      441.5,
+      333.0
     ],
-    "id": "8",
-    "size": 140,
-    "tolerance": 0.8,
-    "line_attachment": "L0"
+    "id": "6",
+    "size": 57,
+    "tolerance": 1.0,
+    "line_attachment": "L1"
   },
   "2": {
     "center": [
-      430.5,
-      176.0
+      443.75,
+      270.25
     ],
-    "id": "5",
-    "size": 139,
-    "tolerance": 0.8,
-    "line_attachment": "L0"
+    "id": "7",
+    "size": 56,
+    "tolerance": 1.0,
+    "line_attachment": "L1"
   },
   "3": {
     "center": [
-      218.5,
-      196.0
+      308.25,
+      389.75
     ],
-    "id": "3",
-    "size": 133,
-    "tolerance": 0.8,
-    "line_attachment": "L0"
+    "id": "0",
+    "size": 54,
+    "tolerance": 1.0,
+    "line_attachment": "L1"
   },
   "4": {
     "center": [
-      221.75,
-      288.75
+      430.25,
+      402.75
     ],
-    "id": "6",
-    "size": 140,
-    "tolerance": 0.8,
-    "line_attachment": "L0"
+    "id": "5",
+    "size": 55,
+    "tolerance": 1.0,
+    "line_attachment": "L1"
   },
   "5": {
     "center": [
-      324.75,
-      186.0
+      315.75,
+      322.0
     ],
-    "id": "4",
-    "size": 134,
-    "tolerance": 0.8,
-    "line_attachment": "L1"
+    "id": "1",
+    "size": 55,
+    "tolerance": 1.0,
+    "line_attachment": "L2"
   },
   "6": {
     "center": [
-      210.75,
-      106.5
+      456.75,
+      146.25
     ],
-    "id": "0",
-    "size": 138,
-    "tolerance": 0.8,
-    "line_attachment": "L1"
+    "id": "9",
+    "size": 54,
+    "tolerance": 1.0,
+    "line_attachment": "L2"
   },
   "7": {
     "center": [
-      315.5,
-      94.5
+      319.75,
+      259.25
     ],
-    "id": "1",
-    "size": 128,
-    "tolerance": 0.8,
-    "line_attachment": "L1"
+    "id": "2",
+    "size": 53,
+    "tolerance": 1.0,
+    "line_attachment": "L2"
   },
   "8": {
     "center": [
-      418.75,
-      84.5
+      334.0,
+      138.0
     ],
-    "id": "2",
-    "size": 128,
-    "tolerance": 0.8,
-    "line_attachment": "L1"
+    "id": "4",
+    "size": 52,
+    "tolerance": 1.0,
+    "line_attachment": "L2"
+  },
+  "9": {
+    "center": [
+      320.0,
+      200.0
+    ],
+    "id": "3",
+    "size": 48,
+    "tolerance": 1.0,
+    "line_attachment": "L2"
   }
 }

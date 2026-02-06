@@ -1,6 +1,7 @@
 import math
-import pprint
+import socket
 import cv2
+import datetime
 import dearpygui.dearpygui as dpg
 import numpy as np
 import json
@@ -68,9 +69,9 @@ def on_start_camera(sender, app_data):
             camera.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, camera.height)
 
         camera.is_opened = True
-        print("Camera started")
+        log_message("Camera started")
     else:
-        print("Camera is not selected")
+        log_message("Camera is not selected", "ERROR")
 
 
 def on_stop_camera(sender, app_data):
@@ -84,9 +85,9 @@ def on_stop_camera(sender, app_data):
 
         camera.is_opened = False
         dpg.set_value("image_texture", np.zeros((selected_cam.width, selected_cam.height, 3), dtype=np.float32))
-        print("Camera stopped")
+        log_message("Camera stopped")
     else:
-        print("Camera is not selected")
+        log_message("Camera is not selected", "ERROR")
 
 
 def on_start_scan(sender, app_data):
@@ -95,7 +96,7 @@ def on_start_scan(sender, app_data):
     if camera is not None:
         scan_started = not scan_started
     else:
-        print("Camera is not selected")
+        log_message("Camera is not selected", "ERROR")
 
 
 def update_camera_frame():
@@ -151,8 +152,8 @@ def update_camera_frame():
                     calibration[str(i)]['center'][0] - calibration[str(i)]['size'] / 2 * calibration[str(i)]['tolerance'],
                     calibration[str(i)]['center'][1] - calibration[str(i)]['size'] / 2 * calibration[str(i)]['tolerance'],
                     calibration[str(i)]['id'],
-                    color,
-                    scale=2
+                    [255, 0, 255],
+                    scale=int(2 * calibration[str(i)]['tolerance'])
                 )
 
         # Обновляем текстуру
@@ -171,19 +172,19 @@ def on_calibrate_btn(sender, app_data):
     k = tolerance
 
     if camera is None:
-        print("Camera is not selected")
+        log_message("Camera is not selected", "ERROR")
         return
 
     if not camera.is_opened:
-        print("Camera is not started")
+        log_message("Camera is not started", "ERROR")
         return
 
     if not scan_started:
-        print("Camera is not scanning")
+        log_message("Camera is not scanning", "ERROR")
         return
 
     if not scan_output['markers_info']:
-        print("Markers are not found")
+        log_message("Markers are not found", "ERROR")
         return
 
     # Основная логика
@@ -203,7 +204,7 @@ def on_calibrate_btn(sender, app_data):
     dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration) - 2}")
     update_reassignment_ui()
     update_assignment_ui()
-    print(calibration)
+    log_message(calibration)
 
 
 def on_reset_calibrate(sender, app_data):
@@ -212,14 +213,14 @@ def on_reset_calibrate(sender, app_data):
     dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration)}")
     update_reassignment_ui()
     update_assignment_ui()
-    print("Calibration reset")
+    log_message("Calibration reset", "SUCCESS")
 
 
 def on_save_calibration(sender, app_data):
     global calibration
     with open('calibration.json', 'w', encoding='utf-8') as f:
         json.dump(calibration, f, ensure_ascii=False, indent=2)
-    print("Calibration saved")
+    log_message("Calibration saved", "SUCCESS")
 
 
 def on_load_calibration(sender, app_data):
@@ -230,10 +231,10 @@ def on_load_calibration(sender, app_data):
         dpg.configure_item("calibration_info", default_value=f"Calibrated positions: {len(calibration) - 2}")
         update_reassignment_ui()
         update_assignment_ui()
-        print("Calibration loaded")
-        print(calibration)
+        log_message("Calibration loaded", "SUCCESS")
+        log_message(calibration)
     else:
-        print("Camera not scanning")
+        log_message("Camera not scanning", "ERROR")
 
 
 def on_change_tolerance(sender, app_data):
@@ -248,9 +249,9 @@ def on_update_tolerance(sender, app_data):
     if calibration:
         for marker in calibration:
             calibration[marker]['tolerance'] = tolerance
-        print(calibration)
+        log_message(calibration)
     else:
-        print("Calibration not find")
+        log_message("Calibration not find", "ERROR")
 
 
 def point_in_circle(cx, cy, r, px, py):
@@ -297,10 +298,10 @@ def do_reassignment():
     from_ = _find_key(dpg.get_value("reassign_from"))
     to_ = _find_key(dpg.get_value("reassign_to"))
     if from_ is None or to_ is None:
-        print("Position not found")
+        log_message("Position not found", "WARNING")
         return
     calibration[from_]['id'], calibration[to_]['id'] = calibration[to_]['id'], calibration[from_]['id']
-    print(f"Swapped {from_} to {to_}")
+    log_message(f"Swapped {from_} to {to_}", "SUCCESS")
 
 
 def _find_key(_id):
@@ -320,7 +321,7 @@ def update_assignment_ui():
         if len(calibration) > 0:
             num_positions = len(calibration)
 
-            for line_idx in range(7):
+            for line_idx in range(1, 7):
                 with dpg.group(horizontal=True, parent="assignment_group"):
                     dpg.add_text(f"L{line_idx}:", color=(255, 200, 100))
 
@@ -345,28 +346,22 @@ def update_assignment_ui():
 def toggle_position_assignment(sender, app_data):
     if app_data:
         calibration[f'{sender.split('-')[1]}']['line_attachment'] = sender.split('-')[0]
-        print(f"Mark №{sender.split('-')[1]} attached to line {sender.split('-')[0]}")
+        log_message(f"Mark №{sender.split('-')[1]} attached to line {sender.split('-')[0]}", "SUCCESS")
     else:
         calibration[f'{sender.split('-')[1]}']['line_attachment'] = ""
-        print(f"Mark №{sender.split('-')[1]} detached from line {sender.split('-')[0]}")
-    #pprint.pprint(calibration)
+        log_message(f"Mark №{sender.split('-')[1]} detached from line {sender.split('-')[0]}", "SUCCESS")
 
 
-# UDP настройки
-#UDP_IP = "127.0.0.1"
-#UDP_PORT = 8888
-
-
-#def sendCameraData(l0="0", l1="0", l2="0", l3="0", l4="0", l5="0", l6="0"):
-#    """Отправка данных по UDP"""
-#    message = f"C:228:0:{l0}:{l1}:{l2}:{l3}:{l4}:{l5}:{l6}#"
-#    try:
-#        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-#        sock.sendto(bytes(message, "utf-8"), (UDP_IP, UDP_PORT))
-#        sock.close()
-#        return True, message
-#    except Exception as e:
-#        return False, str(e)
+def send_camera_data(ip="228", l1="0", l2="0", l3="0", l4="0", l5="0", l6="0"):
+    """Отправка данных по UDP"""
+    message = f"C:{ip}:0:{l1}:{l2}:{l3}:{l4}:{l5}:{l6}#"
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.sendto(bytes(message, "utf-8"), (config.UDP_IP, config.UDP_PORT))
+        sock.close()
+        return True, message
+    except Exception as e:
+        return False, str(e)
 
 
 def generate_packet(line):
@@ -377,7 +372,7 @@ def generate_packet(line):
         if calibration[obj]['line_attachment'] == line:
             array.append(str(get_marker_in_circle(obj))) #Определение метки в окружности
 
-    return ','.join(array) if array else None
+    return ','.join(array) if array else "0"
 
 
 def get_marker_in_circle(number_circle):
@@ -391,5 +386,111 @@ def get_marker_in_circle(number_circle):
             return scan_output['markers_info'][i]['id']
     return 0
 
-def temp():
-    generate_packet("L0")
+
+def toggle_udp():
+    """Переключение UDP отправки"""
+    config.udp_enabled = not config.udp_enabled
+    if config.udp_enabled:
+        dpg.configure_item("udp_btn", label="Stop UDP")
+        dpg.configure_item("udp_status", default_value="UDP: Enabled")
+        dpg.configure_item("udp_status", color=(100, 255, 100))
+    else:
+        dpg.configure_item("udp_btn", label="Start UDP")
+        dpg.configure_item("udp_status", default_value="UDP: Disabled")
+        dpg.configure_item("udp_status", color=(255, 150, 100))
+
+
+def send_udp_once():
+    """Однократная отправка по UDP"""
+    if len(calibration) < 1:
+        log_message("Status: No calibration data to send", "WARNING")
+        return
+
+    success, result = send_camera_data(
+        l1=generate_packet("L1"),
+        l2=generate_packet("L2"),
+        l3=generate_packet("L3"),
+        l4=generate_packet("L4"),
+        l5=generate_packet("L5"),
+        l6=generate_packet("L6")
+    )
+
+    if success:
+        log_message(f"Status: UDP sent - {result}", "SUCCESS")
+        dpg.configure_item("udp_status", default_value=f"UDP: Manual send")
+        dpg.configure_item("udp_status", color=(100, 255, 100))
+    else:
+        log_message(f"Status: UDP error - {result}", "ERROR")
+        dpg.configure_item("udp_status", default_value=f"UDP Error: {result}")
+        dpg.configure_item("udp_status", color=(255, 100, 100))
+
+
+def send_udp_data():
+    if not config.udp_enabled:
+        #log_message("UDP is not started", "ERROR")
+        return
+
+    if len(calibration) < 1:
+        log_message("Status: No calibration data to send", "ERROR")
+        return
+
+    success, result = send_camera_data(
+        l1=generate_packet("L1"),
+        l2=generate_packet("L2"),
+        l3=generate_packet("L3"),
+        l4=generate_packet("L4"),
+        l5=generate_packet("L5"),
+        l6=generate_packet("L6")
+    )
+
+    if success:
+        log_message(f"Status: UDP sent - {result}", "SUCCESS")
+        dpg.configure_item("udp_status", default_value=f"UDP: Auto send")
+        dpg.configure_item("udp_status", color=(100, 255, 100))
+    else:
+        log_message(f"Status: UDP error - {result}", "ERROR")
+        dpg.configure_item("udp_status", default_value=f"UDP Error: {result}")
+        dpg.configure_item("udp_status", color=(255, 100, 100))
+
+
+def update_udp_configuration():
+    config.UDP_IP = dpg.get_value("udp_ip_input")
+    config.UDP_PORT = dpg.get_value("udp_port_input")
+
+
+def clear_logs():
+    """Очистка логов"""
+    if dpg.does_item_exist("log_window"):
+        dpg.delete_item("log_window", children_only=True)
+        log_message("Logs cleared", "INFO")
+
+
+def log_message(message: str, level: str = "INFO"):
+    """Добавление сообщения в лог"""
+    timestamp = datetime.datetime.now().strftime("%H:%M:%S")
+    color_map = {
+        "INFO": (255, 255, 255),
+        "SUCCESS": (0, 255, 0),
+        "WARNING": (255, 255, 0),
+        "ERROR": (255, 0, 0)
+    }
+
+    if dpg.does_item_exist("log_window"):
+        try:
+            with dpg.mutex():
+                dpg.add_text(
+                    f"[{timestamp}] [{level}] {message}",
+                    parent="log_window",
+                    color=color_map.get(level, (255, 255, 255))
+                )
+            dpg.set_y_scroll("log_window", dpg.get_y_scroll_max("log_window"))
+        except:
+            pass
+
+
+def send_interval(interval, timer, func):
+    now = datetime.datetime.now().timestamp()
+    if now - timer > interval:
+        func()
+        return now
+    return timer

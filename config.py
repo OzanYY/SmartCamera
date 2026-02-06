@@ -4,3 +4,6 @@ camera_selected = False
 scan_started = False
 calibration = dict()
 tolerance = 1.0
+udp_enabled = False
+UDP_IP = "127.0.0.1"
+UDP_PORT = 8888
