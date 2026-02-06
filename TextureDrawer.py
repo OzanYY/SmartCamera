@@ -1,5 +1,3 @@
-import numpy as np
-
 class TextureDrawer:
     def __init__(self, texture=None):
         """

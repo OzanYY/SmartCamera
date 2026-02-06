@@ -1,6 +1,5 @@
 import dearpygui.dearpygui as dpg
 import numpy as np
-import datetime as dt
 from config import cameras, UDP_IP, UDP_PORT
 import func
 

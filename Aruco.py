@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
-from typing import Optional, Tuple, List, Dict, Union
-import json
+from typing import Optional, Tuple, Dict, Union
 
 
 class ArucoMarkerDetector:

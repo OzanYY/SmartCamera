@@ -1,5 +1,3 @@
-import cv2
-
 class Webcam:
      def __init__(self):
          # Идентификатор и состояние

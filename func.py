@@ -1,7 +1,5 @@
 import math
 import socket
-from email.policy import default
-
 import cv2
 import datetime
 import dearpygui.dearpygui as dpg
