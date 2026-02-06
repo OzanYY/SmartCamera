@@ -148,7 +148,7 @@ def contain():
                     dpg.add_text("Port:")
                     dpg.add_input_text(
                         tag="udp_port_input",
-                        default_value=UDP_PORT,  #str(UDP_PORT),
+                        default_value=str(UDP_PORT),  # str(UDP_PORT),
                         width=80
                     )
                     dpg.add_button(
@@ -156,7 +156,14 @@ def contain():
                         callback=func.update_udp_configuration,
                         width=80
                     )
-                dpg.add_input_int(tag="freq", label="delay", default_value=1, width=80)
+                with dpg.group(horizontal=True):
+                    dpg.add_text("IP Webcamera:")
+                    dpg.add_input_text(
+                        tag="webcam_ip_input",
+                        default_value="10.148.11.228",  # UDP_IP,
+                        width=120
+                    )
+                    dpg.add_input_int(tag="freq", label="delay", default_value=1, width=80)
 
                 with dpg.group(horizontal=True):
                     dpg.add_button(
@@ -177,7 +184,7 @@ def contain():
                 # Вывод считанных значений
                 dpg.add_text("Reading Output (Packet):", color=(100, 255, 200))
                 dpg.add_text("Format: C:228:0:l0:l1:l2:l3:l4:l5:l6#",
-                             color=(150, 150, 150))
+                             color=(150, 150, 150), tag="output_format")
                 dpg.add_separator()
                 dpg.add_image("image_texture", width=640, height=480)
 

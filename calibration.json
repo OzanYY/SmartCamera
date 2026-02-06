@@ -3,102 +3,92 @@
   "height": 480,
   "0": {
     "center": [
-      439.75,
-      196.75
+      376.25,
+      287.5
     ],
     "id": "8",
-    "size": 58,
-    "tolerance": 1.0,
-    "line_attachment": "L1"
+    "size": 144,
+    "tolerance": 0.8,
+    "line_attachment": ""
   },
   "1": {
     "center": [
-      441.5,
-      333.0
+      257.75,
+      287.25
     ],
-    "id": "6",
-    "size": 57,
-    "tolerance": 1.0,
-    "line_attachment": "L1"
+    "id": "7",
+    "size": 146,
+    "tolerance": 0.8,
+    "line_attachment": ""
   },
   "2": {
     "center": [
-      443.75,
-      270.25
+      370.5,
+      188.5
     ],
-    "id": "7",
-    "size": 56,
-    "tolerance": 1.0,
-    "line_attachment": "L1"
+    "id": "5",
+    "size": 139,
+    "tolerance": 0.8,
+    "line_attachment": ""
   },
   "3": {
     "center": [
-      308.25,
-      389.75
+      142.25,
+      285.75
     ],
-    "id": "0",
-    "size": 54,
-    "tolerance": 1.0,
-    "line_attachment": "L1"
+    "id": "6",
+    "size": 142,
+    "tolerance": 0.8,
+    "line_attachment": ""
   },
   "4": {
     "center": [
-      430.25,
-      402.75
+      259.5,
+      191.5
     ],
-    "id": "5",
-    "size": 55,
-    "tolerance": 1.0,
-    "line_attachment": "L1"
+    "id": "4",
+    "size": 137,
+    "tolerance": 0.8,
+    "line_attachment": ""
   },
   "5": {
     "center": [
-      315.75,
-      322.0
+      149.25,
+      193.25
     ],
-    "id": "1",
-    "size": 55,
-    "tolerance": 1.0,
-    "line_attachment": "L2"
+    "id": "3",
+    "size": 138,
+    "tolerance": 0.8,
+    "line_attachment": ""
   },
   "6": {
     "center": [
-      456.75,
-      146.25
+      366.75,
+      90.5
     ],
-    "id": "9",
-    "size": 54,
-    "tolerance": 1.0,
-    "line_attachment": "L2"
+    "id": "2",
+    "size": 136,
+    "tolerance": 0.8,
+    "line_attachment": ""
   },
   "7": {
     "center": [
-      319.75,
-      259.25
+      259.0,
+      95.0
     ],
-    "id": "2",
-    "size": 53,
-    "tolerance": 1.0,
-    "line_attachment": "L2"
+    "id": "1",
+    "size": 134,
+    "tolerance": 0.8,
+    "line_attachment": ""
   },
   "8": {
     "center": [
-      334.0,
-      138.0
+      152.25,
+      98.5
     ],
-    "id": "4",
-    "size": 52,
-    "tolerance": 1.0,
-    "line_attachment": "L2"
-  },
-  "9": {
-    "center": [
-      320.0,
-      200.0
-    ],
-    "id": "3",
-    "size": 48,
-    "tolerance": 1.0,
-    "line_attachment": "L2"
+    "id": "0",
+    "size": 132,
+    "tolerance": 0.8,
+    "line_attachment": ""
   }
 }

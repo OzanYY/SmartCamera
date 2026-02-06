@@ -1,5 +1,7 @@
 import math
 import socket
+from email.policy import default
+
 import cv2
 import datetime
 import dearpygui.dearpygui as dpg
@@ -153,8 +155,19 @@ def update_camera_frame():
                     calibration[str(i)]['center'][1] - calibration[str(i)]['size'] / 2 * calibration[str(i)]['tolerance'],
                     calibration[str(i)]['id'],
                     [255, 0, 255],
-                    scale=int(2 * calibration[str(i)]['tolerance'])
+                    scale=int(calibration[str(i)]['size'] * calibration[str(i)]['tolerance'] / 8 / 5)
                 )
+
+        success, result = send_camera_data(
+            ip=dpg.get_value("webcam_ip_input").split(".")[3],
+            l1=generate_packet("L1"),
+            l2=generate_packet("L2"),
+            l3=generate_packet("L3"),
+            l4=generate_packet("L4"),
+            l5=generate_packet("L5"),
+            l6=generate_packet("L6")
+        )
+        dpg.configure_item("output_format", default_value=f"Format: {result}#")
 
         # Обновляем текстуру
         dpg.set_value("image_texture", frame_normalized)
@@ -407,6 +420,7 @@ def send_udp_once():
         return
 
     success, result = send_camera_data(
+        ip=dpg.get_value("webcam_ip_input").split(".")[3],
         l1=generate_packet("L1"),
         l2=generate_packet("L2"),
         l3=generate_packet("L3"),
@@ -435,6 +449,7 @@ def send_udp_data():
         return
 
     success, result = send_camera_data(
+        ip=dpg.get_value("webcam_ip_input").split(".")[3],
         l1=generate_packet("L1"),
         l2=generate_packet("L2"),
         l3=generate_packet("L3"),
