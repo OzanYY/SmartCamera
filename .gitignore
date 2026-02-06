@@ -5,3 +5,4 @@ calibration.json
 *.ipr
 .idea_modules/
 __pycache__/
+main.exe
