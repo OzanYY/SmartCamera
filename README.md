@@ -26,26 +26,29 @@
 **Вкладка "Calibration"**
 
 <img width="1274" height="691" alt="main_LqrERtgbNm" src="https://github.com/user-attachments/assets/bdf8dbbd-0994-4074-8991-118d2529f795" />
-- Кнопка "Calibrate" автоматически калибруется по меткам, которые находятся в кадре
-- Кнопка "Clear Calibration" очищает калибровку
-- Кнопка "Save" сохраняет калибровку в JSON файл рядом с exe
-- Кнопка "Load" получает сохраненную калибровку из файла JSON и импортирует ее в программу
-- Параметр "Area size multiplier" отвечает за множитель области калибровки
+
+* Кнопка "Calibrate" автоматически калибруется по меткам, которые находятся в кадре
+* Кнопка "Clear Calibration" очищает калибровку
+* Кнопка "Save" сохраняет калибровку в JSON файл рядом с exe
+* Кнопка "Load" получает сохраненную калибровку из файла JSON и импортирует ее в программу
+* Параметр "Area size multiplier" отвечает за множитель области калибровки
 
 <img width="1274" height="317" alt="main_wCici8vM49" src="https://github.com/user-attachments/assets/016a8a32-e420-4695-ab3a-17ee57a53ba1" />
-- Область "Position Swap/Reassigment" отвечает за возможность поменять позиции местами. Вводится 1 позиция и 2 позиция, а при нажатии на кнопку "Swap" позиции меняются местами
-- Область "Positions Assigment (L1-L6)" ответчает за прикрепление позиций к строкам, которые будут отправляться в ControlCenter
+
+* Область "Position Swap/Reassigment" отвечает за возможность поменять позиции местами. Вводится 1 позиция и 2 позиция, а при нажатии на кнопку "Swap" позиции меняются местами
+* Область "Positions Assigment (L1-L6)" ответчает за прикрепление позиций к строкам, которые будут отправляться в ControlCenter
 
 
 **Вкладка "UDP"**
 
 <img width="1274" height="691" alt="main_Ts0nTHrMUE" src="https://github.com/user-attachments/assets/64a47d09-d8b3-4606-9631-d1cc2e59fa1e" />
-- Настройка ip и порта куда будет отправляться udp пакет, по умолчанию отравляется на localhost.
-- Кнопка "Update" применяет изменения написанные в настройках айпи и порта
-- Поле "IP Webcamera" отвечает за ip адресс смарт камеры, т.к. ее нет то первые 3 бита айпи берется из подсети, а последний 4 бит вводтся относительно настроек ControlCenter
-- Поле "delay" отвечает за интервал отправки пакета, по умолчанию раз в секунду
-- Кнопка "Send Once", отправляет один раз пакет на ControlCenter
-- Кнпока "Start UDP", включает периодическую отправку UDP пакета
+
+* Настройка ip и порта куда будет отправляться udp пакет, по умолчанию отравляется на localhost.
+* Кнопка "Update" применяет изменения написанные в настройках айпи и порта
+* Поле "IP Webcamera" отвечает за ip адресс смарт камеры, т.к. ее нет то первые 3 бита айпи берется из подсети, а последний 4 бит вводтся относительно настроек ControlCenter
+* Поле "delay" отвечает за интервал отправки пакета, по умолчанию раз в секунду
+* Кнопка "Send Once", отправляет один раз пакет на ControlCenter
+* Кнпока "Start UDP", включает периодическую отправку UDP пакета
 
 
 **Вкладка "Logs"**
@@ -56,9 +59,14 @@
 
 ## Как компилировать в .exe
 В локальном окружении нужно скачать две библиотеки
-- pip install nuitka
-- pip install zstandard
+```
+pip install nuitka
+```
+```
+pip install zstandard
+```
   
 Далее выполнить след команду
-
+```
 python -m nuitka --onefile --windows-icon-from-ico=<path-to_ico> --windows-company-name="KIT" --windows-product-name="SmartCamera" --windows-file-version=<version> --windows-product-version=<version> --windows-console-mode=disable main.py
+```
