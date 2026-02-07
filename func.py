@@ -156,16 +156,15 @@ def update_camera_frame():
                     scale=int(calibration[str(i)]['size'] * calibration[str(i)]['tolerance'] / 8 / 5)
                 )
 
-        success, result = send_camera_data(
-            ip=dpg.get_value("webcam_ip_input").split(".")[3],
-            l1=generate_packet("L1"),
-            l2=generate_packet("L2"),
-            l3=generate_packet("L3"),
-            l4=generate_packet("L4"),
-            l5=generate_packet("L5"),
-            l6=generate_packet("L6")
-        )
-        dpg.configure_item("output_format", default_value=f"Format: {result}#")
+        ip=dpg.get_value("webcam_ip_input").split(".")[3]
+        l1=generate_packet("L1")
+        l2=generate_packet("L2")
+        l3=generate_packet("L3")
+        l4=generate_packet("L4")
+        l5=generate_packet("L5")
+        l6=generate_packet("L6")
+        result = f"C:{ip}:0:{l1}:{l2}:{l3}:{l4}:{l5}:{l6}:0#"
+        dpg.configure_item("output_format", default_value=f"Format: {result}")
 
         # Обновляем текстуру
         dpg.set_value("image_texture", frame_normalized)
@@ -365,7 +364,7 @@ def toggle_position_assignment(sender, app_data):
 
 def send_camera_data(ip="228", l1="0", l2="0", l3="0", l4="0", l5="0", l6="0"):
     """Отправка данных по UDP"""
-    message = f"C:{ip}:0:{l1}:{l2}:{l3}:{l4}:{l5}:{l6}#"
+    message = f"C:{ip}:0:{l1}:{l2}:{l3}:{l4}:{l5}:{l6}:0#"
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.sendto(bytes(message, "utf-8"), (config.UDP_IP, config.UDP_PORT))
@@ -383,7 +382,7 @@ def generate_packet(line):
         if calibration[obj]['line_attachment'] == line:
             array.append(str(get_marker_in_circle(obj))) #Определение метки в окружности
 
-    return ','.join(array) if array else "0"
+    return ','.join(array) if len(array) > 0 else "0"
 
 
 def get_marker_in_circle(number_circle):

@@ -182,7 +182,7 @@ def contain():
 
                 # Вывод считанных значений
                 dpg.add_text("Reading Output (Packet):", color=(100, 255, 200))
-                dpg.add_text("Format: C:228:0:l0:l1:l2:l3:l4:l5:l6#",
+                dpg.add_text("Format: C:228:0:l0:l1:l2:l3:l4:l5:l6:0#",
                              color=(150, 150, 150), tag="output_format")
                 dpg.add_separator()
                 dpg.add_image("image_texture", width=640, height=480)
