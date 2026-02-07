@@ -356,10 +356,10 @@ def update_assignment_ui():
 def toggle_position_assignment(sender, app_data):
     if app_data:
         calibration[f'{sender.split('-')[1]}']['line_attachment'] = sender.split('-')[0]
-        log_message(f"Mark №{sender.split('-')[1]} attached to line {sender.split('-')[0]}", "SUCCESS")
+        log_message(f"Mark num-{sender.split('-')[1]} attached to line {sender.split('-')[0]}", "SUCCESS")
     else:
         calibration[f'{sender.split('-')[1]}']['line_attachment'] = ""
-        log_message(f"Mark №{sender.split('-')[1]} detached from line {sender.split('-')[0]}", "SUCCESS")
+        log_message(f"Mark num-{sender.split('-')[1]} detached from line {sender.split('-')[0]}", "SUCCESS")
 
 
 def send_camera_data(ip="228", l1="0", l2="0", l3="0", l4="0", l5="0", l6="0"):
