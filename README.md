@@ -25,7 +25,8 @@
 
 **Вкладка "Calibration"**
 
-![Калибровка](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjFwYXZvaXNxN3d0eG95bGY5eWEwYmJrMmk5NGFsejNvaXp1YmJ6MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/J09SntsFqx9TDhGaME/giphy.gif)
+![Калибровка](https://i.giphy.com/media/J09SntsFqx9TDhGaME/giphy.gif)
+
 
 **Вкладка "UDP"**
 
