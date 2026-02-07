@@ -25,6 +25,10 @@
 
 **Вкладка "Calibration"**
 
+<video src="https://github.com/user-attachments/assets/9d1e9893-d7c0-4aef-83e2-0b421ef5608f" autoplay loop muted playsinline width="640"></video>
+
+
+
 
 **Вкладка "UDP"**
 
