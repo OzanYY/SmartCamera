@@ -25,7 +25,7 @@
 
 **Вкладка "Calibration"**
 
-![calibration](https://drive.google.com/file/d/1Z8Xzl5BdDk8BNog4FbEja4xwT3rwGPHF/view?usp=sharing)
+![calibration](https://drive.google.com/file/d/1Z8Xzl5BdDk8BNog4FbEja4xwT3rwGPHF)
 
 **Вкладка "UDP"**
 
