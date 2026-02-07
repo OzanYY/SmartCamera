@@ -6,13 +6,13 @@
 
 ## Tech stack
 
-![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white) 
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 
 [![OpenCV](https://img.shields.io/badge/OpenCV-4.13-5C3EE8?logo=opencv&logoColor=white)](https://github.com/opencv/opencv-python)
 [![DearPyGui](https://img.shields.io/badge/Dear%20PyGui-2.1-FF6B6B?)](https://github.com/hoffstadt/DearPyGui)
 [![NumPy](https://img.shields.io/badge/NumPy-2.4-013243?logo=numpy&logoColor=white)](https://github.com/numpy/numpy)
 
 ## Installation
-
+Просто скачайте .exe файл из последнего релиза
 
 ## Use
