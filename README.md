@@ -25,10 +25,7 @@
 
 **Вкладка "Calibration"**
 
-<video src="https://github.com/user-attachments/assets/9d1e9893-d7c0-4aef-83e2-0b421ef5608f" autoplay loop muted playsinline width="640"></video>
-
-
-
+![calibration](https://drive.google.com/file/d/1Z8Xzl5BdDk8BNog4FbEja4xwT3rwGPHF/view?usp=sharing)
 
 **Вкладка "UDP"**
 
