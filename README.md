@@ -23,4 +23,5 @@
 - pip install zstandard
   
 Далее выполнить след команду
+
 python -m nuitka --onefile --windows-icon-from-ico=<path-to_ico> --windows-company-name="KIT" --windows-product-name="SmartCamera" --windows-file-version=<version> --windows-product-version=<version> --windows-console-mode=disable main.py
